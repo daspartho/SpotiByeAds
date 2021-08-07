@@ -11,11 +11,9 @@ git clone https://github.com/daspartho/SpotiByeAds.git
 cd SpotiByeAds.py
 ```
 ```
-pip install pynput
+pip install pynput spotipy
 ```
-```
-pip install spotipy
-```
+
 
 ### Setting up
 
