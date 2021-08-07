@@ -1,6 +1,9 @@
+from os import error
+
+
 while True: #If we get no import errors then break from the loop. If we do get an error install the dependencies and do the try/catch block again.
      try:
-         import os,time,shutil,subprocess #Base Libs
+         import os,time,shutil,subprocess,json #Base Libs
          import spotipy
          from spotipy import util, SpotifyException
          from pynput.keyboard import Key, Controller
@@ -79,13 +82,47 @@ def main(username, scope, clientID, clientSecret, redirectURI, path):
         time.sleep(1)
 
 if __name__ == '__main__':
-    
-    PATH = None
-    spotifyUsername = input("Ok, what's your Spotify username? ")
-    spotifyClientID = input("Great, now what's the ClientID you're using? ")
-    spotifyClientSecret = input("Beautiful, now how about the Client Secret? ")
+    # these are kinda constants
+    PATH = None;
     spotifyAccessScope = "user-read-currently-playing"
     spotifyRedirectURI = "http://localhost:8080/"
 
-    main(spotifyUsername, spotifyAccessScope, spotifyClientID, spotifyClientSecret, spotifyRedirectURI, PATH)
+    try:
+        with open("./credentials.json", "r") as creds_json:
+            creds = json.load(creds_json)
+
+            load = input("Found previously used credentials. Want to use them again? (Y/n) ")
+
+            if load != "Y": 
+                raise FileNotFoundError("User didn't want to load from save.");
+
+            spotify_username = creds["spotify_username"]
+            spotify_client_id = creds["spotify_client_id"]
+            spotify_client_secret = creds["spotify_client_secret"]
+
+            creds_json.close();
+    except FileNotFoundError:
+        spotify_username = input("Ok, what's your Spotify username? ")
+        spotify_client_id = input("Great, now what's the ClientID you're using? ")
+        spotify_client_secret = input("Beautiful, now how about the Client Secret? ")
+
+        save = input("Awesome, now would you like to save these settings for future sessions? (Y/n) ")
+        
+        if save == "Y":
+            save_obj = {
+                "spotify_username": spotify_username,
+                "spotify_client_id": spotify_client_id,
+                "spotify_client_secret": spotify_client_secret
+            }
+
+            with open("./credentials.json", "w") as creds:
+                creds.write(json.dumps(save_obj))
+                creds.close()
+
+                print("Saved.")
+
+        else:
+            print("Didn't recognize input, defaulted to not saving.")
+
+    main(spotify_username, spotifyAccessScope, spotify_client_id, spotify_client_secret, spotifyRedirectURI, PATH)
 
