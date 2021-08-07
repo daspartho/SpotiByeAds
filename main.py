@@ -56,10 +56,10 @@ def main(username, scope, clientID, clientSecret, redirectURI, path):
 
 if __name__ == '__main__':
     
-    PATH = ''
-    spotifyUsername = ""
-    spotifyClientID = ""
-    spotifyClientSecret = ""
+    PATH = 'C:\Program Files\Spotify'
+    spotifyUsername = "ajstephenson333"
+    spotifyClientID = "c6c7c84be9a6499295cd4f9330a462c1"
+    spotifyClientSecret = "df57c8c863894cb2b88f5d63f40959b5"
     spotifyAccessScope = "user-read-currently-playing"
     spotifyRedirectURI = "http://localhost:8080/"
 
