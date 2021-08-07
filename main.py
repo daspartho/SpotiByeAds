@@ -2,6 +2,7 @@ import time
 import os
 import sys
 import configparser
+import psutil
 
 import spotipy
 from spotipy import util
@@ -11,7 +12,7 @@ CONFIG_FILE = 'config.properties'
 CONFIG_BASE = 'spotify'
 
 def close_spotify():
-    os.system("taskkill /f /im spotify.exe")
+    find_spotify_process().kill()
 
 def open_spotify(path):
     os.startfile(path)
@@ -46,9 +47,9 @@ def setup_spotify_object(config):
     return spotipy.Spotify(auth=token)
 
 def find_spotify_process():
-    for proc in psutil.process_iter(['ppid', 'pid', 'name', 'cmdline']):
-        if 'spotify' in proc.info['name'].lower():
-            return proc.info
+    for proc in psutil.process_iter():
+        if 'spotify' in proc.name().lower():
+            return proc
     return None
 
 def find_spotify_absolute_path():
@@ -56,7 +57,7 @@ def find_spotify_absolute_path():
     if proc is None:
         print('Please, run the Spotify app and try again')
         sys.exit(-1)
-    return proc.cmdline[0]
+    return proc.cmdline()[0]
 
 def create_config_file():
     config = configparser.ConfigParser()
