@@ -1,5 +1,6 @@
 # Python virtualenv
 env
+__pycache__
 
 # Config file created by main.py
 config.properties
