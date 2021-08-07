@@ -3,6 +3,7 @@ import os
 import spotipy
 from spotipy import util
 from pynput.keyboard import Key, Controller
+import json
 
 def closeSpotify():
     os.system("taskkill /f /im spotify.exe")
@@ -56,12 +57,31 @@ def main(username, scope, clientID, clientSecret, redirectURI, path):
 
 if __name__ == '__main__':
     
-    PATH = ''
-    spotifyUsername = ""
-    spotifyClientID = ""
-    spotifyClientSecret = ""
-    spotifyAccessScope = "user-read-currently-playing"
-    spotifyRedirectURI = "http://localhost:8080/"
+    try:
+        with open("credentials.json", "r") as credentials_json:
+            credentials = json.load(credentials_json)
+            PATH = credentials["PATH"]
+            spotify_username = credentials["spotify_username"]
+            spotify_client_id = credentials["spotify_client_id"]
+            spotify_client_secret = credentials["spotify_client_secret"]
+            ACCESS_SCOPE = credentials["ACCESS_SCOPE"]
+            REDIRECT_URI = credentials["REDIRECT_URI"]
+    except FileNotFoundError:
+        print("SpotiByeAds setup:")
+        
+        PATH = input("Where is your Spotify.exe located? ")
+        spotify_username = input("What is your Spotify username? ")
+        spotify_client_id = input("What is your Client ID? ")
+        spotify_client_secret = input("What is your Client Secret? ")
+        ACCESS_SCOPE = "user-read-currently-playing"
+        REDIRECT_URI = "http://localhost:8080/"
 
-    main(spotifyUsername, spotifyAccessScope, spotifyClientID, spotifyClientSecret, spotifyRedirectURI, PATH)
+        spotify_credentials = {"PATH":PATH, "spotify_username":spotify_username, "spotify_client_id":spotify_client_id, "spotify_client_secret":spotify_client_secret, "ACCESS_SCOPE":ACCESS_SCOPE, "REDIRECT_URI":REDIRECT_URI}
+        
+        with open("credentials.json", "w") as credentials:
+            credentials.write(json.dumps(spotify_credentials))
+
+
+
+    main(spotify_username, ACCESS_SCOPE, spotify_client_id, spotify_client_secret, REDIRECT_URI, PATH)
 
