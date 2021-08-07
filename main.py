@@ -20,7 +20,7 @@ def playSpotify():
     keyboard.press(Key.media_play_pause)
     keyboard.release(Key.media_play_pause)
     
-def setupSpotifyObject():
+def previousWindow():
     keyboard = Controller()
     keyboard.press(Key.alt_l)
     keyboard.press(Key.tab)
@@ -45,6 +45,7 @@ def setupSpotifyObject(config):
 
 def create_config_file():
     config = configparser.ConfigParser()
+
 
     config[CONFIG_BASE] = {
         'accessScope': 'user-read-currently-playing',
