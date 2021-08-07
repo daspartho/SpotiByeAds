@@ -9,51 +9,50 @@ from pynput.keyboard import Key, Controller
 CONFIG_FILE = 'config.properties'
 CONFIG_BASE = 'spotify'
 
-def closeSpotify():
+def close_spotify():
     os.system("taskkill /f /im spotify.exe")
 
-def openSpotify(path):
+def open_spotify(path):
     os.startfile(path)
 
-def playSpotify():
+def play_spotify():
     keyboard = Controller()
     keyboard.press(Key.media_play_pause)
     keyboard.release(Key.media_play_pause)
     
-def previousWindow():
+def previous_window():
     keyboard = Controller()
     keyboard.press(Key.alt_l)
     keyboard.press(Key.tab)
     keyboard.release(Key.alt_l)
     keyboard.release(Key.tab)
     
-def restartSpotify(path):
-    closeSpotify()
-    openSpotify(path)
+def restart_spotify(path):
+    close_spotify()
+    open_spotify(path)
     time.sleep(5)
-    playSpotify()
-    previousWindow()
+    play_spotify()
+    previous_window()
 
-def setupSpotifyObject(config):
+def setup_spotify_object(config):
     token = util.prompt_for_user_token(
             config.get(CONFIG_BASE, 'username'),
-            config.get(CONFIG_BASE, 'acessScope'),
-            config.get(CONFIG_BASE, 'clientID'),
-            config.get(CONFIG_BASE, 'clientSecret'),
-            config.get(CONFIG_BASE, 'redirectURI'))
+            config.get(CONFIG_BASE, 'acess_scope'),
+            config.get(CONFIG_BASE, 'client_id'),
+            config.get(CONFIG_BASE, 'client_secret'),
+            config.get(CONFIG_BASE, 'redirect_uri'))
     return spotipy.Spotify(auth=token)
 
 def create_config_file():
     config = configparser.ConfigParser()
 
-
     config[CONFIG_BASE] = {
-        'accessScope': 'user-read-currently-playing',
-        'redirectURI': 'http://localhost:8080/',
+        'access_scope': 'user-read-currently-playing',
+        'redirect_uri': 'http://localhost:8080/',
         'path': ''
     }
 
-    for n in ('username', 'clientID', 'clientSecret'):
+    for n in ('username', 'client_id', 'client_secret'):
         config[CONFIG_BASE][n] = input(f'Enter Spotify {n}: ')
 
     with open(CONFIG_FILE, 'w') as cf:
@@ -68,7 +67,7 @@ def load_config_file():
 
 def main():
     config = load_config_file()
-    spotify = setupSpotifyObject(config)
+    spotify = setup_spotify_object(config)
 
     while True:
 
@@ -76,12 +75,12 @@ def main():
             current_track = spotify.current_user_playing_track()
         except:
             print('token expired')
-            spotify = setupSpotifyObject(config)
+            spotify = setup_spotify_object(config)
             current_track = spotify.current_user_playing_track()
 
         try:
             if current_track['currently_playing_type'] == 'ad':
-                restartSpotify(path)
+                restart_spotify(path)
                 print('Ad skipped')
         except TypeError:
             pass
