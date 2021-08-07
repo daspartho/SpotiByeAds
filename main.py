@@ -16,7 +16,7 @@ def closeSpotify():
         os.system('killall -9 spotify')
 
 def openSpotify(path):
-    if not path:
+    if path is None:
         path = shutil.which('spotify')
 
     subprocess.Popen([path], start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -53,7 +53,7 @@ def main(username, scope, clientID, clientSecret, redirectURI, path):
 
         try:
             current_track = spotify.current_user_playing_track()
-        except Exception:
+        except spotipy.exceptions.SpotifyException:
             print('token expired')
             spotify = setupSpotifyObject(username, scope, clientID, clientSecret, redirectURI)
             current_track = spotify.current_user_playing_track()
@@ -69,7 +69,7 @@ def main(username, scope, clientID, clientSecret, redirectURI, path):
 
 if __name__ == '__main__':
 
-    PATH = ""
+    PATH = None
     spotifyUsername = ""
     spotifyClientID = ""
     spotifyClientSecret = ""
