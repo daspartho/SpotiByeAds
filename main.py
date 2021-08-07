@@ -1,5 +1,6 @@
 import time
 import os
+import sys
 import configparser
 
 import spotipy
@@ -27,7 +28,8 @@ def previous_window():
     keyboard.release(Key.alt_l)
     keyboard.release(Key.tab)
     
-def restart_spotify(path):
+def restart_spotify():
+    path = find_spotify_absolute_path()
     close_spotify()
     open_spotify(path)
     time.sleep(5)
@@ -37,11 +39,24 @@ def restart_spotify(path):
 def setup_spotify_object(config):
     token = util.prompt_for_user_token(
             config.get(CONFIG_BASE, 'username'),
-            config.get(CONFIG_BASE, 'acess_scope'),
+            config.get(CONFIG_BASE, 'access_scope'),
             config.get(CONFIG_BASE, 'client_id'),
             config.get(CONFIG_BASE, 'client_secret'),
             config.get(CONFIG_BASE, 'redirect_uri'))
     return spotipy.Spotify(auth=token)
+
+def find_spotify_process():
+    for proc in psutil.process_iter(['ppid', 'pid', 'name', 'cmdline']):
+        if 'spotify' in proc.info['name'].lower():
+            return proc.info
+    return None
+
+def find_spotify_absolute_path():
+    proc = find_spotify_process()
+    if proc is None:
+        print('Please, run the Spotify app and try again')
+        sys.exit(-1)
+    return proc.cmdline[0]
 
 def create_config_file():
     config = configparser.ConfigParser()
@@ -49,7 +64,6 @@ def create_config_file():
     config[CONFIG_BASE] = {
         'access_scope': 'user-read-currently-playing',
         'redirect_uri': 'http://localhost:8080/',
-        'path': ''
     }
 
     for n in ('username', 'client_id', 'client_secret'):
@@ -80,7 +94,7 @@ def main():
 
         try:
             if current_track['currently_playing_type'] == 'ad':
-                restart_spotify(path)
+                restart_spotify()
                 print('Ad skipped')
         except TypeError:
             pass
