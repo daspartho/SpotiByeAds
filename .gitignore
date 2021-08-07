@@ -3,3 +3,6 @@ env
 
 # Config file created by main.py
 config.properties
+
+# Cache files created by spotipy
+.cache*
