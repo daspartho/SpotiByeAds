@@ -15,7 +15,8 @@ def close_spotify():
     find_spotify_process().kill()
 
 def open_spotify(path):
-    os.startfile(path)
+    import webbrowser
+    webbrowser.open(path)
 
 def play_spotify():
     keyboard = Controller()
