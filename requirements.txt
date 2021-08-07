@@ -1,0 +1,2 @@
+spotipy >= 2.18.0
+pynput >= 1.7.3
