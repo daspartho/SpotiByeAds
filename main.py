@@ -8,6 +8,7 @@ while True:  # If we get no import errors then break from the loop. If we do get
          import shutil
          import subprocess
          import json
+         from getpass import getuser  # Getting appdata folder
 
         # External modeules
          import spotipy
@@ -44,9 +45,13 @@ def closeSpotify():
 def openSpotify(path):
     """Start a Spotify instance"""
     if path is None:
-        path = shutil.which("spotify")
+        path = shutil.which("spotify") 
     if path is None and os.name == "posix":
         path = "/Applications/Spotify.app"
+
+    # Path may still be `None`, if so try to get it from the default installation location
+    if path is None:
+        path = f"C:/{getuser()}/AppData/Roaming/Spotify/Spotify.exe"
 
     subprocess.Popen([path], start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)
 
