@@ -1,5 +1,7 @@
 from os import error
 
+import sys
+
 while True:  # If we get no import errors then break from the loop. If we do get an error install the dependencies and do the try/catch block again.
     try:
         import os, time, shutil, subprocess, json  # Base Libs
@@ -19,21 +21,18 @@ keyboard = Controller()  # I noticed how we kept making a new keyboard controlle
 
 
 def closeSpotify():
-    if os.name == "nt":
-        # windows
+    if sys.platform.startswith == "win32":  # windows
         os.system("taskkill /f /im spotify.exe")
-    elif os.name == "posix":
-        # macos
+    elif sys.platform.startswith == "darwin":  # macos
         os.system("kill -9 13068")
-    else:
-        # almost everything else
+    else:  # almost everything else, this works for most, if not all Linux distros
         os.system("killall -9 spotify")
 
 
 def openSpotify(path):
     if path is None:
         path = shutil.which("spotify")
-    if path is None and os.name == "posix":
+    if path is None and sys.platform.startswith == "darwin":
         path = "/Applications/Spotify.app"
 
     subprocess.Popen([path], start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)
