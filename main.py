@@ -56,7 +56,7 @@ def main(username, scope, clientID, clientSecret, redirectURI, path):
 
 if __name__ == '__main__':
     
-    PATH = ''
+    PATH = r""
     spotifyUsername = ""
     spotifyClientID = ""
     spotifyClientSecret = ""
