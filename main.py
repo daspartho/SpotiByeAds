@@ -3,7 +3,6 @@ import sys, os, time, shutil, subprocess, json  # Base Libs
 
 try:
     import spotipy
-    from spotipy import util, SpotifyException
     from pynput.keyboard import Key, Controller
 except ImportError:
     print("DEPENDENCIES NOT INSTALLED!"
@@ -50,7 +49,8 @@ def restartSpotify(path: str = None):
     previousWindow()
 
 def setupSpotifyObject(username, scope, clientID, clientSecret, redirectURI):
-    token = util.prompt_for_user_token(username, scope, clientID, clientSecret, redirectURI)
+    token = spotipy.util.prompt_for_user_token(username, scope, clientID,
+                                               clientSecret, redirectURI)
     return spotipy.Spotify(auth=token)
 
 def main(username, scope, clientID, clientSecret, redirectURI, path):    
@@ -63,7 +63,7 @@ def main(username, scope, clientID, clientSecret, redirectURI, path):
         
         try:
             current_track = spotify.current_user_playing_track()
-        except spotipy.exceptions.SpotifyException:
+        except spotipy.SpotifyException:
             print('Token expired')
             spotify = setupSpotifyObject(username, scope, clientID, clientSecret, redirectURI)
             current_track = spotify.current_user_playing_track()
