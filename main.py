@@ -109,7 +109,7 @@ if __name__ == '__main__':
 
         save = input("Awesome, now would you like to save these settings for future sessions? (Y/n) ")
         
-        if save == "Y":
+        if save.lower() == "y":
             save_obj = {
                 "spotify_username": spotify_username,
                 "spotify_client_id": spotify_client_id,
@@ -121,6 +121,9 @@ if __name__ == '__main__':
                 creds.close()
 
                 print("Saved.")
+
+        elif save.lower() == "n":
+            print("Not saving settings.")
 
         else:
             print("Didn't recognize input, defaulted to not saving.")
