@@ -92,9 +92,9 @@ if __name__ == '__main__':
         with open("./credentials.json", "r") as creds_json:
             creds = json.load(creds_json)
 
-            load = input("Found previously used credentials. Want to use them again? (Y/n) ")
+            load = input("Found previously used credentials. Want to use them again? (y/N) ")
 
-            if load != "Y":
+            if load.lower() != "y":
                 raise FileNotFoundError("User didn't want to load from save.");
 
             spotify_username = creds["spotify_username"]
@@ -107,7 +107,7 @@ if __name__ == '__main__':
         spotify_client_id = input("Great, now what's the ClientID you're using? ")
         spotify_client_secret = input("Beautiful, now how about the Client Secret? ")
 
-        save = input("Awesome, now would you like to save these settings for future sessions? (Y/n) ")
+        save = input("Awesome, now would you like to save these settings for future sessions? (y/N) ")
 
         if save.lower() == "y":
             save_obj = {
@@ -122,9 +122,9 @@ if __name__ == '__main__':
                     creds.close()
 
                     print("Saved.")
-            except:
+            except Exception:
                 print("Failed to write settings to disk.")
-                
+
         elif save.lower() == "n":
             print("Choosing not to save.")
         else:
