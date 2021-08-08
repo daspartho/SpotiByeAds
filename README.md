@@ -3,6 +3,11 @@
 No one likes interruptions! right? So this program detects when an advertisement plays by monitoring the type of the track that is currently playing, using the Spotipy API. 
 When an ad is detected, the program restarts Spotify by the os module and plays it via pynput, which skips the ad and starts right where you left off.
 
+### Dependencies
+
+- Python 3
+- Everything in requirements.txt (Don't worry, the script will install it for you)
+
 ### Installation
 ```
 git clone https://github.com/daspartho/SpotiByeAds.git
