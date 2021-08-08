@@ -1,9 +1,8 @@
-from os import error
+import os, time, shutil, subprocess, json  # Base Libs
 
 
-while True: #If we get no import errors then break from the loop. If we do get an error install the dependencies and do the try/catch block again.
+while True:
      try:
-         import os,time,shutil,subprocess,json #Base Libs
          import spotipy
          from spotipy import util, SpotifyException
          from pynput.keyboard import Key, Controller
@@ -11,8 +10,14 @@ while True: #If we get no import errors then break from the loop. If we do get a
      except ImportError:
          print("Import Error: Downloading off 'requirements.txt'")
          time.sleep(1)
-         os.system("pip3 install -r requirements.txt")
-         print("Done!")
+         # pip has zero return code only if successfull.
+         if os.system("pip3 install -r requirements.txt"):
+             print("\nERROR installing requirements!"
+                   "\nPlease check the log above, fix the problem and rerun SpotiByeAds."
+                  )
+             raise SystemExit(1)
+         else:
+             print("\nSuccessfully installed requirements!\n")
 
 #Vars
 keyboard = Controller() #I noticed how we kept making a new keyboard controller instance so decided to just make it a variable
