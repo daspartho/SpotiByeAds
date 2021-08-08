@@ -1,23 +1,15 @@
 import sys, os, time, shutil, subprocess, json  # Base Libs
 
 
-while True:
-     try:
-         import spotipy
-         from spotipy import util, SpotifyException
-         from pynput.keyboard import Key, Controller
-         break
-     except ImportError:
-         print("Import Error: Downloading off 'requirements.txt'")
-         time.sleep(1)
-         # pip has zero return code only if successfull.
-         if os.system("pip3 install -r requirements.txt"):
-             print("\nERROR installing requirements!"
-                   "\nPlease check the log above, fix the problem and rerun SpotiByeAds."
-                  )
-             raise SystemExit(1)
-         else:
-             print("\nSuccessfully installed requirements!\n")
+try:
+    import spotipy
+    from spotipy import util, SpotifyException
+    from pynput.keyboard import Key, Controller
+except ImportError:
+    print("DEPENDENCIES NOT INSTALLED!"
+          "\nPlease install the depenencies by running:"
+          "\n\t`python -m pip install -r requirements.txt`")
+    sys.exit(1)
 
 #Vars
 keyboard = Controller()
