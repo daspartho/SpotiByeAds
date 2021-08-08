@@ -16,7 +16,7 @@ pip install -r requirements.txt
 2. Click on the 'CREATE AN APP' option and provide an app name and app description as you'd like.
 3. Go to 'EDIT SETTINGS' and fill in the Redirect URIs placeholder with http://localhost:8080/, and click on Save.
 4. Make a note of your ClientID and Client Secret. You'll need it in a minute.
-5. (Optional) By default SpotiByeAds will detect the location of your Spotify installion. However, if you'd like you can change the `PATH` variable to your Spotify location. 
+5. (Optional) By default SpotiByeAds will detect the location of your Spotify installation. However, if you'd like you can change the `PATH` variable to your Spotify location. 
 
 ### Usage
 1. Open Spotify and start your favourite track.

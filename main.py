@@ -84,7 +84,7 @@ def main(username, scope, clientID, clientSecret, redirectURI, path):
 
 if __name__ == '__main__':
     # these are kinda constants
-    PATH = None;
+    path = None;
     spotifyAccessScope = "user-read-currently-playing"
     spotifyRedirectURI = "http://localhost:8080/"
 
@@ -125,5 +125,5 @@ if __name__ == '__main__':
         else:
             print("Didn't recognize input, defaulted to not saving.")
 
-    main(spotify_username, spotifyAccessScope, spotify_client_id, spotify_client_secret, spotifyRedirectURI, PATH)
+    main(spotify_username, spotifyAccessScope, spotify_client_id, spotify_client_secret, spotifyRedirectURI, path)
 
