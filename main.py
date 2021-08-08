@@ -18,7 +18,7 @@ while True: #If we get no import errors then break from the loop. If we do get a
 keyboard = Controller() #I noticed how we kept making a new keyboard controller instance so decided to just make it a variable
 
 def closeSpotify():
-    if sys.platform == "win32":
+    if os.name == "nt":
         # windows
         os.system("taskkill /f /im spotify.exe")
     elif sys.platform == "darwin":
