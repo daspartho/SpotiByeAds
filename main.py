@@ -1,23 +1,35 @@
 from os import error
 
-
-while True: #If we get no import errors then break from the loop. If we do get an error install the dependencies and do the try/catch block again.
+while True:  # If we get no import errors then break from the loop. If we do get an error install the dependencies and do the try/catch block again.
      try:
-         import os,time,shutil,subprocess,json #Base Libs
+         # Base modules
+         import os, time, shutil, subprocess, json
+         import time
+         import shutil
+         import subprocess
+         import json
+
+        # External modeules
          import spotipy
          from spotipy import util, SpotifyException
          from pynput.keyboard import Key, Controller
          break
      except ImportError:
          print("Import Error: Downloading off 'requirements.txt'")
-         time.sleep(1)
          os.system("pip3 install -r requirements.txt")
          print("Done!")
 
 #Vars
-keyboard = Controller() #I noticed how we kept making a new keyboard controller instance so decided to just make it a variable
+keyboard = Controller()  # I noticed how we kept making a new keyboard controller instance so decided to just make it a variable
+
+# Constants
+PATH = None
+SPOTIFY_ACCESS_SCOPE = "user-read-currently-playing"
+SPOTIFY_REDIRECT_URI = "http://localhost:8080/"
+
 
 def closeSpotify():
+    """Kill the currently running spotify.exe process"""
     if os.name == "nt":
         # windows
             os.system("taskkill /f /im spotify.exe")
@@ -28,7 +40,9 @@ def closeSpotify():
         # almost everything else
         os.system("killall -9 spotify")
 
+
 def openSpotify(path):
+    """Start a Spotify instance"""
     if path is None:
         path = shutil.which("spotify")
     if path is None and os.name == "posix":
@@ -36,36 +50,44 @@ def openSpotify(path):
 
     subprocess.Popen([path], start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)
 
+
 def playSpotify():
+    """Play next in spotify"""
     keyboard = Controller()
     keyboard.press(Key.media_next)
     keyboard.release(Key.media_next)
-    
+
+
 def previousWindow():
+    """Switch to the previous window (via alt+tab)"""
     keyboard.press(Key.alt_l)
     keyboard.press(Key.tab)
     keyboard.release(Key.alt_l)
     keyboard.release(Key.tab)
-    
+
+
 def restartSpotify(path:str):
+    """Restart the spotify instance"""
     closeSpotify()
     openSpotify(path)
     time.sleep(5)
     playSpotify()
     previousWindow()
 
+
 def setupSpotifyObject(username, scope, clientID, clientSecret, redirectURI):
+    """Authorise and return a valid spotify instance"""
     token = util.prompt_for_user_token(username, scope, clientID, clientSecret, redirectURI)
     return spotipy.Spotify(auth=token)
 
-def main(username, scope, clientID, clientSecret, redirectURI, path):    
+
+def main(username, scope, clientID, clientSecret, redirectURI, path):
     spotify = setupSpotifyObject(username, scope, clientID, clientSecret, redirectURI)
 
     print("\nAwesome, that's all I needed. I'm watching for ads now <.<")
     restartSpotify(path)
 
     while True:
-        
         try:
             current_track = spotify.current_user_playing_track()
         except spotipy.exceptions.SpotifyException:
@@ -82,12 +104,8 @@ def main(username, scope, clientID, clientSecret, redirectURI, path):
         
         time.sleep(1)
 
-if __name__ == '__main__':
-    # these are kinda constants
-    PATH = None;
-    spotifyAccessScope = "user-read-currently-playing"
-    spotifyRedirectURI = "http://localhost:8080/"
 
+if __name__ == '__main__':
     try:
         with open("./credentials.json", "r") as creds_json:
             creds = json.load(creds_json)
@@ -101,13 +119,12 @@ if __name__ == '__main__':
             spotify_client_id = creds["spotify_client_id"]
             spotify_client_secret = creds["spotify_client_secret"]
 
-            creds_json.close();
     except FileNotFoundError:
-        spotify_username = input("Ok, what's your Spotify username? ")
-        spotify_client_id = input("Great, now what's the ClientID you're using? ")
-        spotify_client_secret = input("Beautiful, now how about the Client Secret? ")
+        spotify_username = input("Ok, what's your Spotify username?: ")
+        spotify_client_id = input("Great, now what's the ClientID you're using?: ")
+        spotify_client_secret = input("Beautiful, now how about the Client Secret?: ")
 
-        save = input("Awesome, now would you like to save these settings for future sessions? (Y/n) ")
+        save = input("Awesome, now would you like to save these settings for future sessions? (Y/n): ")
         
         if save == "Y":
             save_obj = {
@@ -125,5 +142,5 @@ if __name__ == '__main__':
         else:
             print("Didn't recognize input, defaulted to not saving.")
 
-    main(spotify_username, spotifyAccessScope, spotify_client_id, spotify_client_secret, spotifyRedirectURI, PATH)
+    main(spotify_username, SPOTIFY_ACCESS_SCOPE, spotify_client_id, spotify_client_secret, SPOTIFY_REDIRECT_URI, PATH)
 
