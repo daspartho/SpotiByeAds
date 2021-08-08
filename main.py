@@ -122,8 +122,8 @@ if __name__ == '__main__':
                     creds.close()
 
                     print("Saved.")
-            except Exception:
-                print("Failed to write settings to disk.")
+            except Exception as e:
+                print(f"Failed to write settings to disk: {e}")
 
         elif save.lower() == "n":
             print("Choosing not to save.")
