@@ -73,7 +73,7 @@ def main(username, scope, clientID, clientSecret, redirectURI, path):
             current_track = spotify.current_user_playing_track()
             
         try:
-            if current_track['currently_playing_type'] == 'ad' or 1: #TODO: remove 'or 1' it's just for testing
+            if current_track['currently_playing_type'] == 'ad':
                 restartSpotify(path)
                 print('Ad skipped')
         except TypeError:
