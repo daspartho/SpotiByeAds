@@ -37,8 +37,9 @@ def openSpotify(path):
     subprocess.Popen([path], start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)
 
 def playSpotify():
-    keyboard.press(Key.media_play_pause)
-    keyboard.release(Key.media_play_pause)
+    keyboard = Controller()
+    keyboard.press(Key.media_next)
+    keyboard.release(Key.media_next)
     
 def previousWindow():
     keyboard.press(Key.alt_l)
