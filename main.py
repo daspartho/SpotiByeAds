@@ -37,7 +37,6 @@ def openSpotify(path):
     subprocess.Popen([path], start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)
 
 def playSpotify():
-    keyboard = Controller()
     keyboard.press(Key.media_next)
     keyboard.release(Key.media_next)
     
@@ -74,7 +73,7 @@ def main(username, scope, clientID, clientSecret, redirectURI, path):
             current_track = spotify.current_user_playing_track()
             
         try:
-            if current_track['currently_playing_type'] == 'ad':
+            if current_track['currently_playing_type'] == 'ad' or 1: #TODO: remove 'or 1' it's just for testing
                 restartSpotify(path)
                 print('Ad skipped')
         except TypeError:
