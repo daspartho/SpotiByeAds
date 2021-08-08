@@ -1,4 +1,4 @@
-import os, time, shutil, subprocess, json  # Base Libs
+import sys, os, time, shutil, subprocess, json  # Base Libs
 
 
 while True:
@@ -20,29 +20,27 @@ while True:
              print("\nSuccessfully installed requirements!\n")
 
 #Vars
-keyboard = Controller() #I noticed how we kept making a new keyboard controller instance so decided to just make it a variable
+keyboard = Controller()
 
 def closeSpotify():
-    if os.name == "nt":
-        # windows
-            os.system("taskkill /f /im spotify.exe")
-    elif os.name == "posix":
-        # macos
-        os.system("kill -9 13068")
-    else:
-        # almost everything else
+    if os.name == "nt":  # windows
+        os.system("taskkill /f /im spotify.exe")
+    elif sys.platform == "darwin":  # Mac OS
+        # Not exactly sure of the process name, so used regex.
+        os.system("killall -9 -r [Ss]potify.*")
+    else:  # almost everything else
         os.system("killall -9 spotify")
 
-def openSpotify(path):
-    if path is None:
-        path = shutil.which("spotify")
-    if path is None and os.name == "posix":
-        path = "/Applications/Spotify.app"
+def openSpotify(path=None):
+    path = (path
+            or shutil.which("spotify")
+            or ("/Applications/Spotify.app" if sys.platform == "darwin"  # MacOS
+                else "")
+           )
 
     subprocess.Popen([path], start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)
 
 def playSpotify():
-    keyboard = Controller()
     keyboard.press(Key.media_next)
     keyboard.release(Key.media_next)
     
@@ -52,7 +50,7 @@ def previousWindow():
     keyboard.release(Key.alt_l)
     keyboard.release(Key.tab)
     
-def restartSpotify(path:str):
+def restartSpotify(path: str = None):
     closeSpotify()
     openSpotify(path)
     time.sleep(5)
