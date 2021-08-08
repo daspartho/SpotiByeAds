@@ -3,7 +3,7 @@ from os import error
 
 while True: #If we get no import errors then break from the loop. If we do get an error install the dependencies and do the try/catch block again.
      try:
-         import os,time,shutil,subprocess,json #Base Libs
+         import os,sys,time,shutil,subprocess,json #Base Libs
          import spotipy
          from spotipy import util, SpotifyException
          from pynput.keyboard import Key, Controller
@@ -18,10 +18,10 @@ while True: #If we get no import errors then break from the loop. If we do get a
 keyboard = Controller() #I noticed how we kept making a new keyboard controller instance so decided to just make it a variable
 
 def closeSpotify():
-    if os.name == "nt":
+    if sys.platform == "win32":
         # windows
-            os.system("taskkill /f /im spotify.exe")
-    elif os.name == "posix":
+        os.system("taskkill /f /im spotify.exe")
+    elif sys.platform == "darwin":
         # macos
         os.system("kill -9 13068")
     else:
@@ -31,7 +31,7 @@ def closeSpotify():
 def openSpotify(path):
     if path is None:
         path = shutil.which("spotify")
-    if path is None and os.name == "posix":
+    if path is None and sys.platform == "darwin":
         path = "/Applications/Spotify.app"
 
     subprocess.Popen([path], start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)
