@@ -40,13 +40,13 @@ def playSpotify():
     keyboard = Controller()
     keyboard.press(Key.media_next)
     keyboard.release(Key.media_next)
-    
+
 def previousWindow():
     keyboard.press(Key.alt_l)
     keyboard.press(Key.tab)
     keyboard.release(Key.alt_l)
     keyboard.release(Key.tab)
-    
+
 def restartSpotify(path:str):
     closeSpotify()
     openSpotify(path)
@@ -58,28 +58,28 @@ def setupSpotifyObject(username, scope, clientID, clientSecret, redirectURI):
     token = util.prompt_for_user_token(username, scope, clientID, clientSecret, redirectURI)
     return spotipy.Spotify(auth=token)
 
-def main(username, scope, clientID, clientSecret, redirectURI, path):    
+def main(username, scope, clientID, clientSecret, redirectURI, path):
     spotify = setupSpotifyObject(username, scope, clientID, clientSecret, redirectURI)
 
     print("\nAwesome, that's all I needed. I'm watching for ads now <.<")
     restartSpotify(path)
 
     while True:
-        
+
         try:
             current_track = spotify.current_user_playing_track()
         except spotipy.exceptions.SpotifyException:
             print('Token expired')
             spotify = setupSpotifyObject(username, scope, clientID, clientSecret, redirectURI)
             current_track = spotify.current_user_playing_track()
-            
+
         try:
             if current_track['currently_playing_type'] == 'ad':
                 restartSpotify(path)
                 print('Ad skipped')
         except TypeError:
             pass
-        
+
         time.sleep(1)
 
 if __name__ == '__main__':
@@ -94,7 +94,7 @@ if __name__ == '__main__':
 
             load = input("Found previously used credentials. Want to use them again? (Y/n) ")
 
-            if load != "Y": 
+            if load != "Y":
                 raise FileNotFoundError("User didn't want to load from save.");
 
             spotify_username = creds["spotify_username"]
@@ -108,22 +108,26 @@ if __name__ == '__main__':
         spotify_client_secret = input("Beautiful, now how about the Client Secret? ")
 
         save = input("Awesome, now would you like to save these settings for future sessions? (Y/n) ")
-        
-        if save == "Y":
+
+        if save.lower() == "y":
             save_obj = {
                 "spotify_username": spotify_username,
                 "spotify_client_id": spotify_client_id,
                 "spotify_client_secret": spotify_client_secret
             }
 
-            with open("./credentials.json", "w") as creds:
-                creds.write(json.dumps(save_obj))
-                creds.close()
+            try:
+                with open("./credentials.json", "w") as creds:
+                    creds.write(json.dumps(save_obj))
+                    creds.close()
 
-                print("Saved.")
-
+                    print("Saved.")
+            except:
+                print("Failed to write settings to disk.")
+                
+        elif save.lower() == "n":
+            print("Choosing not to save.")
         else:
             print("Didn't recognize input, defaulted to not saving.")
 
     main(spotify_username, spotifyAccessScope, spotify_client_id, spotify_client_secret, spotifyRedirectURI, PATH)
-
