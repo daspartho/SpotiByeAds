@@ -20,7 +20,7 @@ keyboard = Controller() #I noticed how we kept making a new keyboard controller 
 def closeSpotify():
     if os.name == "nt":
         # windows
-            os.system("taskkill /f /im spotify.exe")
+            os.system("taskkill /f /im Spotify.exe")
     elif os.name == "posix":
         # macos
         os.system("kill -9 13068")
@@ -30,7 +30,7 @@ def closeSpotify():
 
 def openSpotify(path):
     if path is None:
-        path = shutil.which("spotify")
+        path = shutil.which("Spotify")
     if path is None and os.name == "posix":
         path = "/Applications/Spotify.app"
 
