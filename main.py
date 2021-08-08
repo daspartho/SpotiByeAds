@@ -12,8 +12,8 @@ def openSpotify(path):
 
 def playSpotify():
     keyboard = Controller()
-    keyboard.press(Key.media_play_pause)
-    keyboard.release(Key.media_play_pause)
+    keyboard.press(Key.media_next)
+    keyboard.release(Key.media_next)
     
 def previousWindow():
     keyboard = Controller()
