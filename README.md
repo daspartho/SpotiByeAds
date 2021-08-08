@@ -8,7 +8,7 @@ When an ad is detected, the program restarts Spotify by the os module and plays 
 git clone https://github.com/daspartho/SpotiByeAds.git
 ```
 ```
-cd SpotiByeAds.py
+cd SpotiByeAds
 ```
 ```
 pip install pynput
