@@ -24,9 +24,12 @@ def closeSpotify():
 
 def openSpotify(path=None):
     path = (path
-            or shutil.which("spotify")
-            or ("/Applications/Spotify.app" if sys.platform == "darwin"  # MacOS
-                else "")
+            or shutil.which("spotify")  # For any system with spotify added to $PATH
+            or ("{HOMEDRIVE}{HOMEPATH}\AppData\Roaming\Spotify\Spotify.exe"
+                .format_map(os.environ) if os.name == "nt"  # Windows
+                else "/Applications/Spotify.app" if sys.platform == "darwin"  # MacOS
+                else ""  # Popen expects a path-like object.
+               )
            )
 
     subprocess.Popen([path], start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)
