@@ -25,7 +25,7 @@ git clone https://github.com/daspartho/SpotiByeAds.git
 ```
 - Then, change your current directory into the SpotiByeAds repository.
 ```
-cd SpotiByeAds.py
+cd SpotiByeAds
 ```
 - Finally, install the requirements in the requirements file.
 ```
