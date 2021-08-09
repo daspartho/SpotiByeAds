@@ -1,6 +1,5 @@
 import sys, os, time, shutil, subprocess, json  # Base Libs
 
-
 try:
     import spotipy
     from pynput.keyboard import Key, Controller
@@ -12,6 +11,7 @@ except ImportError:
 
 #Vars
 keyboard = Controller()
+SubtractDelay = 6 #Check ln 72
 
 def closeSpotify():
     if os.name == "nt":  # windows
@@ -69,7 +69,10 @@ def main(username, scope, clientID, clientSecret, redirectURI, path):
         except TypeError:
             pass
         
-        time.sleep(1)
+        time.sleep((spotify.current_user_playing_track['duration_ms']/1000) - SubtractDelay) #Stop us from getting rate limited from spotify API
+        #Instead of checking every second for an ad. We simply get the total length of the song and wait for that ammount of time. 
+        #Now spotify returns miliseconds for song length which is weird but this can easily be fixed with some basic math.
+        #We get the song duration and divide it by 1000 and we get our time in seconds
 
 if __name__ == '__main__':
     # these are kinda constants
@@ -133,4 +136,3 @@ if __name__ == '__main__':
             print("Didn't recognize input, defaulted to not saving.")
 
     main(spotify_username, spotifyAccessScope, spotify_client_id, spotify_client_secret, spotifyRedirectURI, PATH)
-
