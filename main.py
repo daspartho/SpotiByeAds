@@ -87,24 +87,33 @@ if __name__ == '__main__':
         with open("./credentials.json", "r") as creds_json:
             creds = json.load(creds_json)
 
-            load = input("Found previously used credentials. Want to use them again? (Y/n) ")
+            load = input("Found previously used credentials."
+                         " Want to use them again? (Y/n) "
+                        ).lower()
 
-            if load != "Y": 
-                raise FileNotFoundError("User didn't want to load from save.");
+            if load != "y":
+                if load == "n":
+                    print("User didn't want to load from save.")
+                    raise FileNotFoundError
+                else:
+                    print("Unrecognized Input.")
+                    creds_json.close()  # The program exits immediately below.
+                    sys.exit(0)
 
             spotify_username = creds["spotify_username"]
             spotify_client_id = creds["spotify_client_id"]
             spotify_client_secret = creds["spotify_client_secret"]
 
-            creds_json.close();
     except FileNotFoundError:
         spotify_username = input("Ok, what's your Spotify username? ")
         spotify_client_id = input("Great, now what's the ClientID you're using? ")
         spotify_client_secret = input("Beautiful, now how about the Client Secret? ")
 
-        save = input("Awesome, now would you like to save these settings for future sessions? (Y/n) ")
+        save = input("Awesome, now would you like to save these settings"
+                     " for future sessions? (Y/n) "
+                    ).lower()
         
-        if save.lower() == "y":
+        if save == "y":
             save_obj = {
                 "spotify_username": spotify_username,
                 "spotify_client_id": spotify_client_id,
@@ -117,7 +126,7 @@ if __name__ == '__main__':
 
                 print("Saved.")
 
-        elif save.lower() == "n":
+        elif save == "n":
             print("Not saving settings.")
 
         else:
