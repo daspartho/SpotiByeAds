@@ -1,3 +1,8 @@
+.cache-*
+
+.DS_STORE
+credentials.json
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -5,9 +10,6 @@ __pycache__/
 
 # C extensions
 *.so
-
-#Other
-virtenv
 
 # Distribution / packaging
 .Python
