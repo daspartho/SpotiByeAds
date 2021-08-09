@@ -1,43 +1,31 @@
-from os import error
+import sys, os, time, shutil, subprocess, json  # Base Libs
 
 
-while True: #If we get no import errors then break from the loop. If we do get an error install the dependencies and do the try/catch block again.
-     try:
-         import os,time,shutil,subprocess,json #Base Libs
-         import spotipy
-         from spotipy import util, SpotifyException
-         from pynput.keyboard import Key, Controller
-         break
-     except ImportError:
-         print("Import Error: Downloading off 'requirements.txt'")
-         time.sleep(1)
-         os.system("pip3 install -r requirements.txt")
-         print("Done!")
+try:
+    import spotipy
+    from pynput.keyboard import Key, Controller
+except ImportError:
+    print("DEPENDENCIES NOT INSTALLED!"
+          "\nPlease install the depenencies by running:"
+          "\n\t`python -m pip install -r requirements.txt`")
+    sys.exit(1)
 
 #Vars
-keyboard = Controller() #I noticed how we kept making a new keyboard controller instance so decided to just make it a variable
+keyboard = Controller()
 
 def closeSpotify():
-    if os.name == "nt":
-        # windows
-            os.system("taskkill /f /im spotify.exe")
-    elif os.name == "posix":
-        # macos
-        os.system("kill -9 13068")
-    else:
-        # almost everything else
+    if os.name == "nt":  # windows
+        os.system("taskkill /f /im spotify.exe")
+    elif sys.platform == "darwin":  # Mac OS
+        # Not exactly sure of the process name, so used regex.
+        os.system("killall -9 -r [Ss]potify.*")
+    else:  # almost everything else
         os.system("killall -9 spotify")
 
 def openSpotify(path):
-    if path is None:
-        path = shutil.which("spotify")
-    if path is None and os.name == "posix":
-        path = "/Applications/Spotify.app"
-
     subprocess.Popen([path], start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)
 
 def playSpotify():
-    keyboard = Controller()
     keyboard.press(Key.media_next)
     keyboard.release(Key.media_next)
     
@@ -47,7 +35,7 @@ def previousWindow():
     keyboard.release(Key.alt_l)
     keyboard.release(Key.tab)
     
-def restartSpotify(path:str):
+def restartSpotify(path):
     closeSpotify()
     openSpotify(path)
     time.sleep(5)
@@ -55,7 +43,8 @@ def restartSpotify(path:str):
     previousWindow()
 
 def setupSpotifyObject(username, scope, clientID, clientSecret, redirectURI):
-    token = util.prompt_for_user_token(username, scope, clientID, clientSecret, redirectURI)
+    token = spotipy.util.prompt_for_user_token(username, scope, clientID,
+                                               clientSecret, redirectURI)
     return spotipy.Spotify(auth=token)
 
 def main(username, scope, clientID, clientSecret, redirectURI, path):    
@@ -68,7 +57,7 @@ def main(username, scope, clientID, clientSecret, redirectURI, path):
         
         try:
             current_track = spotify.current_user_playing_track()
-        except spotipy.exceptions.SpotifyException:
+        except spotipy.SpotifyException:
             print('Token expired')
             spotify = setupSpotifyObject(username, scope, clientID, clientSecret, redirectURI)
             current_track = spotify.current_user_playing_track()
@@ -84,7 +73,13 @@ def main(username, scope, clientID, clientSecret, redirectURI, path):
 
 if __name__ == '__main__':
     # these are kinda constants
-    PATH = None;
+    PATH = (shutil.which("spotify")  # For any system with spotify on $PATH
+            or ("{HOMEDRIVE}{HOMEPATH}\AppData\Roaming\Spotify\Spotify.exe"
+                .format_map(os.environ) if os.name == "nt"  # Windows
+                else "/Applications/Spotify.app" if sys.platform == "darwin"  # MacOS
+                else ""  # Popen expects a path-like object, `None` results in an error.
+               )
+           )
     spotifyAccessScope = "user-read-currently-playing"
     spotifyRedirectURI = "http://localhost:8080/"
 
