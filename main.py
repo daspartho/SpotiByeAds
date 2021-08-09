@@ -22,16 +22,7 @@ def closeSpotify():
     else:  # almost everything else
         os.system("killall -9 spotify")
 
-def openSpotify(path=None):
-    path = (path
-            or shutil.which("spotify")  # For any system with spotify added to $PATH
-            or ("{HOMEDRIVE}{HOMEPATH}\AppData\Roaming\Spotify\Spotify.exe"
-                .format_map(os.environ) if os.name == "nt"  # Windows
-                else "/Applications/Spotify.app" if sys.platform == "darwin"  # MacOS
-                else ""  # Popen expects a path-like object.
-               )
-           )
-
+def openSpotify(path):
     subprocess.Popen([path], start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)
 
 def playSpotify():
@@ -44,7 +35,7 @@ def previousWindow():
     keyboard.release(Key.alt_l)
     keyboard.release(Key.tab)
     
-def restartSpotify(path: str = None):
+def restartSpotify(path):
     closeSpotify()
     openSpotify(path)
     time.sleep(5)
@@ -82,7 +73,13 @@ def main(username, scope, clientID, clientSecret, redirectURI, path):
 
 if __name__ == '__main__':
     # these are kinda constants
-    PATH = None;
+    PATH = (shutil.which("spotify")  # For any system with spotify on $PATH
+            or ("{HOMEDRIVE}{HOMEPATH}\AppData\Roaming\Spotify\Spotify.exe"
+                .format_map(os.environ) if os.name == "nt"  # Windows
+                else "/Applications/Spotify.app" if sys.platform == "darwin"  # MacOS
+                else ""  # Popen expects a path-like object, `None` results in an error.
+               )
+           )
     spotifyAccessScope = "user-read-currently-playing"
     spotifyRedirectURI = "http://localhost:8080/"
 
