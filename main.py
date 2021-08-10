@@ -68,7 +68,7 @@ def main(username, scope, clientID, clientSecret, redirectURI, path):
         except TypeError:
             pass
         
-        time.sleep((spotify.current_user_playing_track['duration_ms']/1000) - 6) #Stop us from getting rate limited from spotify API (It just waits for the song to end)
+        time.sleep((spotify.current_user_playing_track('duration_ms')/1000) - 6) #Stop us from getting rate limited from spotify API (It just waits for the song to end)
 
 if __name__ == '__main__':
     # these are kinda constants
