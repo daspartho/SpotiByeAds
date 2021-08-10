@@ -52,6 +52,7 @@ def main(username, scope, clientID, clientSecret, redirectURI, path):
     print("\nAwesome, that's all I needed. I'm watching for ads now <.<")
     restartSpotify(path)
 
+    last_track = ""
     while True:
         
         try:
@@ -61,14 +62,20 @@ def main(username, scope, clientID, clientSecret, redirectURI, path):
             spotify = setupSpotifyObject(username, scope, clientID, clientSecret, redirectURI)
             current_track = spotify.current_user_playing_track()
             
-        try:
+        if current_track:  # Can either be `None` or JSON data `dict`.
             if current_track['currently_playing_type'] == 'ad':
                 restartSpotify(path)
                 print('Ad skipped')
-        except TypeError:
-            pass
-        
-        time.sleep((spotify.current_user_playing_track['duration_ms']/1000) - 6) #Stop us from getting rate limited from spotify API (It just waits for the song to end)
+                continue  # get new track info
+
+            if current_track['item']['name'] != last_track:  # Next track
+                # Current track's remaining duration
+                wait = current_track["item"]['duration_ms'] - current_track['progress_ms']
+                # Reduces API requests to prevent getting rate limited from spotify API
+                time.sleep(wait/1000 - 8)  # until **almost** the end of the current track
+                last_track = current_track['item']['name']
+
+        time.sleep(1)
 
 if __name__ == '__main__':
     # these are kinda constants
@@ -132,3 +139,4 @@ if __name__ == '__main__':
             print("Didn't recognize input, defaulted to not saving.")
 
     main(spotify_username, spotifyAccessScope, spotify_client_id, spotify_client_secret, spotifyRedirectURI, PATH)
+
