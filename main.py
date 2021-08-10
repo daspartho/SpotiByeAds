@@ -1,7 +1,8 @@
-import sys, os, time, shutil, subprocess, json  # Base Libs
+import sys, os, time, shutil, subprocess, json, urllib
 
 try:
     import spotipy
+    import urllib3
     from pynput.keyboard import Key, Controller
 except ImportError:
     print("DEPENDENCIES NOT INSTALLED!"
@@ -47,28 +48,55 @@ def setupSpotifyObject(username, scope, clientID, clientSecret, redirectURI):
     return spotipy.Spotify(auth=token)
 
 def main(username, scope, clientID, clientSecret, redirectURI, path):    
-    spotify = setupSpotifyObject(username, scope, clientID, clientSecret, redirectURI)
+    try:
+        spotify = setupSpotifyObject(username, scope, clientID, clientSecret, redirectURI)
+    except (OSError, urllib3.exceptions.HTTPError) as e:
+        print(f"\nSomething went wrong: {e}\n")
+        print("Please connect to the internet and run the program again.")
+        return
 
     print("\nAwesome, that's all I needed. I'm watching for ads now <.<")
     restartSpotify(path)
 
+    current_track = None
+    last_track = ""
     while True:
         
         try:
-            current_track = spotify.current_user_playing_track()
-        except spotipy.SpotifyException:
-            print('Token expired')
-            spotify = setupSpotifyObject(username, scope, clientID, clientSecret, redirectURI)
-            current_track = spotify.current_user_playing_track()
+            try:
+                current_track = spotify.current_user_playing_track()
+            except spotipy.SpotifyException:
+                print('Token expired')
+                spotify = setupSpotifyObject(username, scope, clientID, clientSecret, redirectURI)
+                current_track = spotify.current_user_playing_track()
+
+        except (OSError, urllib3.exceptions.HTTPError) as e:
+            print(f"\nSomething went wrong: {e}\n")
+            print("Waiting for network connection...")
+            while True:
+                time.sleep(5)
+                try:  # Test network
+                    urllib.request.urlopen("https://spotify.com", timeout=5)
+                except urllib.error.URLError:
+                    pass
+                else:
+                    print("Connection restored!")
+                    break
             
-        try:
+        if current_track:  # Can either be `None` or JSON data `dict`.
             if current_track['currently_playing_type'] == 'ad':
                 restartSpotify(path)
                 print('Ad skipped')
-        except TypeError:
-            pass
-        
-        time.sleep((spotify.current_user_playing_track['duration_ms']/1000) - 6) #Stop us from getting rate limited from spotify API (It just waits for the song to end)
+                continue  # get new track info
+
+            if current_track['item']['name'] != last_track:  # Next track
+                # Current track's remaining duration
+                wait = current_track["item"]['duration_ms'] - current_track['progress_ms']
+                # Reduces API requests to prevent getting rate limited from spotify API
+                time.sleep(wait/1000 - 8)  # until **almost** the end of the current track
+                last_track = current_track['item']['name']
+
+        time.sleep(1)
 
 if __name__ == '__main__':
     # these are kinda constants
@@ -132,3 +160,4 @@ if __name__ == '__main__':
             print("Didn't recognize input, defaulted to not saving.")
 
     main(spotify_username, spotifyAccessScope, spotify_client_id, spotify_client_secret, spotifyRedirectURI, PATH)
+
