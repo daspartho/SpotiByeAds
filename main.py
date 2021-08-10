@@ -1,7 +1,8 @@
-import sys, os, time, shutil, subprocess, json  # Base Libs
+import sys, os, time, shutil, subprocess, json, urllib
 
 try:
     import spotipy
+    import urllib3
     from pynput.keyboard import Key, Controller
 except ImportError:
     print("DEPENDENCIES NOT INSTALLED!"
@@ -47,20 +48,40 @@ def setupSpotifyObject(username, scope, clientID, clientSecret, redirectURI):
     return spotipy.Spotify(auth=token)
 
 def main(username, scope, clientID, clientSecret, redirectURI, path):    
-    spotify = setupSpotifyObject(username, scope, clientID, clientSecret, redirectURI)
+    try:
+        spotify = setupSpotifyObject(username, scope, clientID, clientSecret, redirectURI)
+    except (OSError, urllib3.exceptions.HTTPError) as e:
+        print(f"\nSomething went wrong: {e}\n")
+        print("Please connect to the internet and run the program again.")
+        return
 
     print("\nAwesome, that's all I needed. I'm watching for ads now <.<")
     restartSpotify(path)
 
+    current_track = None
     last_track = ""
     while True:
         
         try:
-            current_track = spotify.current_user_playing_track()
-        except spotipy.SpotifyException:
-            print('Token expired')
-            spotify = setupSpotifyObject(username, scope, clientID, clientSecret, redirectURI)
-            current_track = spotify.current_user_playing_track()
+            try:
+                current_track = spotify.current_user_playing_track()
+            except spotipy.SpotifyException:
+                print('Token expired')
+                spotify = setupSpotifyObject(username, scope, clientID, clientSecret, redirectURI)
+                current_track = spotify.current_user_playing_track()
+
+        except (OSError, urllib3.exceptions.HTTPError) as e:
+            print(f"\nSomething went wrong: {e}\n")
+            print("Waiting for network connection...")
+            while True:
+                time.sleep(5)
+                try:  # Test network
+                    urllib.request.urlopen("https://spotify.com", timeout=5)
+                except urllib.error.URLError:
+                    pass
+                else:
+                    print("Connection restored!")
+                    break
             
         if current_track:  # Can either be `None` or JSON data `dict`.
             if current_track['currently_playing_type'] == 'ad':
