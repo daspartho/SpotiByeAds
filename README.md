@@ -17,7 +17,7 @@ After SBA has your credentials, it will establish a connection with Spotify by r
 - Pip (Python's Package Manager)
 
 # Installation
-### It should be noted that this is a quick way to get SBA(SpotiByeAds) up and running! For more indepth documentation, go [here](https://spotibyeads.readthedocs.io/en/latest/).
+### It should be noted that this is a quick way to get SBA (SpotiByeAds) up and running! For more indepth documentation, go [here](https://spotibyeads.readthedocs.io/en/latest/).
 
 - First, clone the repository.
 ```
@@ -25,7 +25,7 @@ git clone https://github.com/daspartho/SpotiByeAds.git
 ```
 - Then, change your current directory into the SpotiByeAds repository.
 ```
-cd SpotiByeAds.py
+cd SpotiByeAds
 ```
 - Finally, install the requirements in the requirements file.
 ```
@@ -46,7 +46,7 @@ pip install -r requirements.txt
 # Usage
 1. Open Spotify and start your favourite track.
 2. Run the script in background using `python main.py` in the respective directory.
-3. Congratulations! You can now listen to Spotifyy with no ads and the peace of mind you deserve :D.
+3. Congratulations! You can now listen to Spotify with no ads and the peace of mind you deserve :D.
 
 # Contributing
 If you want to contribute code, just write a quick pull request and the developers will look at it. If you want to suggest a idea, just write a issue and the developers will check it out!
