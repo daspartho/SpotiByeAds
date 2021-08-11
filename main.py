@@ -77,7 +77,7 @@ def main(username, scope, clientID, clientSecret, redirectURI, path):
                 time.sleep(5)
                 try:  # Test network
                     urllib.request.urlopen("https://spotify.com", timeout=5)
-                except urllib.error.URLError:
+                except OSError:
                     pass
                 else:
                     print("Connection restored!")
