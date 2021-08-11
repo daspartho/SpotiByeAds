@@ -103,8 +103,8 @@ def main(username, scope, clientID, clientSecret, redirectURI, path):
                     last_track = current_track['item']['name']
                 except KeyboardInterrupt:
                     print("\n1. Skip track.\n"
-                          "2. Change playlist/track.\n"
-                          "3. Enter anything else to exit this program.\n"
+                          "2. Want to change playlist/track or pause playback.\n"
+                          "3. Exit this program (enter anything else).\n"
                          )
                     choice = input("Choose an option (1/2/?): ")
                     last_track = ""  # In case the track remains the same.
@@ -116,8 +116,10 @@ def main(username, scope, clientID, clientSecret, redirectURI, path):
                         time.sleep(0.6)  # 600ms seems to be the shortest possible
                         playPause()
                     elif choice == '2':
-                        input("You can go ahead to change the playlist/track on the Spotify app.\n"
-                              "Press ENTER after changing the playlist/track...")
+                        input("You can go ahead to change the playlist/track"
+                              " or pause the playback on the Spotify app.\n"
+                              "Press ENTER after changing the playlist/track"
+                              " or resuming playback...")
                         print("Resuming my business of skipping ads ;)")
                     else:
                         sys.exit(0)
