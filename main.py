@@ -81,7 +81,7 @@ def main(username, scope, clientID, clientSecret, redirectURI, path):
                     time.sleep(5)
                     try:  # Test network
                         urllib.request.urlopen("https://spotify.com", timeout=5)
-                    except urllib.error.URLError:
+                    except OSError:
                         pass
                     else:
                         print("Connection restored!")
@@ -130,6 +130,7 @@ def main(username, scope, clientID, clientSecret, redirectURI, path):
             if input("\nExit? (Y/n) ").lower() != 'n':
                 break
             print("Resuming my business of skipping ads ;)")
+
 
 if __name__ == '__main__':
     # these are kinda constants
@@ -193,4 +194,3 @@ if __name__ == '__main__':
             print("Didn't recognize input, defaulted to not saving.")
 
     main(spotify_username, spotifyAccessScope, spotify_client_id, spotify_client_secret, spotifyRedirectURI, PATH)
-
