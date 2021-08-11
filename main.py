@@ -194,3 +194,4 @@ if __name__ == '__main__':
             print("Didn't recognize input, defaulted to not saving.")
 
     main(spotify_username, spotifyAccessScope, spotify_client_id, spotify_client_secret, spotifyRedirectURI, PATH)
+
