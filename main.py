@@ -25,7 +25,11 @@ def closeSpotify():
 def openSpotify(path):
     subprocess.Popen([path], start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)
 
-def playSpotify():
+def playPause():
+    keyboard.press(Key.media_play_pause)
+    keyboard.release(Key.media_play_pause)
+
+def nextTrack():
     keyboard.press(Key.media_next)
     keyboard.release(Key.media_next)
     
@@ -39,7 +43,7 @@ def restartSpotify(path):
     closeSpotify()
     openSpotify(path)
     time.sleep(5)
-    playSpotify()
+    nextTrack()
     previousWindow()
 
 def setupSpotifyObject(username, scope, clientID, clientSecret, redirectURI):
@@ -61,42 +65,72 @@ def main(username, scope, clientID, clientSecret, redirectURI, path):
     current_track = None
     last_track = ""
     while True:
-        
         try:
             try:
-                current_track = spotify.current_user_playing_track()
-            except spotipy.SpotifyException:
-                print('Token expired')
-                spotify = setupSpotifyObject(username, scope, clientID, clientSecret, redirectURI)
-                current_track = spotify.current_user_playing_track()
+                try:
+                    current_track = spotify.current_user_playing_track()
+                except spotipy.SpotifyException:
+                    print('Token expired')
+                    spotify = setupSpotifyObject(username, scope, clientID, clientSecret, redirectURI)
+                    current_track = spotify.current_user_playing_track()
 
-        except (OSError, urllib3.exceptions.HTTPError) as e:
-            print(f"\nSomething went wrong: {e}\n")
-            print("Waiting for network connection...")
-            while True:
-                time.sleep(5)
-                try:  # Test network
-                    urllib.request.urlopen("https://spotify.com", timeout=5)
-                except OSError:
-                    pass
-                else:
-                    print("Connection restored!")
-                    break
-            
-        if current_track:  # Can either be `None` or JSON data `dict`.
-            if current_track['currently_playing_type'] == 'ad':
-                restartSpotify(path)
-                print('Ad skipped')
-                continue  # get new track info
+            except (OSError, urllib3.exceptions.HTTPError) as e:
+                print(f"\nSomething went wrong: {e}\n")
+                print("Waiting for network connection...")
+                while True:
+                    time.sleep(5)
+                    try:  # Test network
+                        urllib.request.urlopen("https://spotify.com", timeout=5)
+                    except OSError:
+                        pass
+                    else:
+                        print("Connection restored!")
+                        break
 
-            if current_track['item']['name'] != last_track:  # Next track
-                # Current track's remaining duration
-                wait = current_track["item"]['duration_ms'] - current_track['progress_ms']
-                # Reduces API requests to prevent getting rate limited from spotify API
-                time.sleep(wait/1000 - 8)  # until **almost** the end of the current track
-                last_track = current_track['item']['name']
+            if current_track:  # Can either be `None` or JSON data `dict`.
+                if current_track['currently_playing_type'] == 'ad':
+                    restartSpotify(path)
+                    print('Ad skipped')
+                    continue  # get new track info
 
-        time.sleep(1)
+                if current_track['item']['name'] != last_track:  # Next track
+                    # Current track's remaining duration
+                    wait = current_track["item"]['duration_ms'] - current_track['progress_ms']
+
+                    try:
+                        # Reduces API requests to prevent getting rate limited from spotify API
+                        time.sleep(wait/1000 - 8)  # until **almost** the end of the current track
+                        last_track = current_track['item']['name']
+                    except KeyboardInterrupt:
+                        print("\n1. Skip track.\n"
+                              "2. Want to change playlist/track or pause playback.\n"
+                              "3. Exit this program (enter anything else).\n"
+                             )
+                        choice = input("Choose an option (1/2/?): ")
+                        last_track = ""  # In case the track remains the same.
+                        if choice == '1':
+                            nextTrack()
+                            playPause()  # To prevent ads from playing during the delay below.
+                            # A short delay is required for the Spotify API to register the
+                            # track change, so as to get the correct track info on the next request.
+                            time.sleep(0.6)  # 600ms seems to be the shortest possible
+                            playPause()
+                        elif choice == '2':
+                            input("You can go ahead to change the playlist/track"
+                                  " or pause the playback on the Spotify app.\n"
+                                  "Press ENTER after changing the playlist/track"
+                                  " or resuming playback...")
+                            print("Resuming my business of skipping ads ;)")
+                        else:
+                            sys.exit(0)
+                        continue  # Skip the one-second sleep
+
+            time.sleep(1)
+        except KeyboardInterrupt:
+            if input("\nExit? (Y/n) ").lower() != 'n':
+                break
+            print("Resuming my business of skipping ads ;)")
+
 
 if __name__ == '__main__':
     # these are kinda constants
