@@ -22,6 +22,7 @@ When an ad enters your spotify queue, SBA will detect the current track as an ad
 
 # Installation
 > It should be noted that this is a quick way to get SBA (SpotiByeAds) up and running!
+>
 > For a detailed documentation, go [here](https://spotibyeads.readthedocs.io/en/latest/).
 
 - First, clone the repository.
@@ -49,7 +50,9 @@ You should need to do these only the first time.
    - ⚠️ **Please remember to never share your Client Secret with anyone. This could lead to your account getting stolen or irregular Spotify user behavior that could lead to account termination.**
    - **Developers of SpotiByeAds will never ask for your Client Secret.**
 
-⚠️ If you are on Linux and installed a **containerized** version of Spotify (e.g via Snap or Flatpack) or any unofficial forms of distribution, please paste the path to the Spotify executable on your computer (or a command that starts up the Spotify app) in the `main.py` script on the line described below:
+⚠️⚠️⚠️
+
+If you are on Linux and installed a **containerized** version of Spotify (e.g via Snap or Flatpack) or any unofficial forms of distribution, please paste the path to the Spotify executable on your computer (or a command that starts up the Spotify app) in the `main.py` script on the line described below:
 ```python
     PATH = (shutil.which("spotify")  # For any system with spotify on $PATH
             or ("{HOMEDRIVE}{HOMEPATH}\AppData\Roaming\Spotify\Spotify.exe"
@@ -60,13 +63,28 @@ You should need to do these only the first time.
            )
 ```
 Please find this part of the script and paste the path/command within the `""` (empty quotes) on the line with the comment `# Custom path ...`.
-⚠️ This is also applicable on any other OS if Spotify's installation path is different from the usual.
+
+This is also applicable on any other OS, if the Spotify installation path is different from the usual (and is not included in the $PATH environment variable).
+
+⚠️⚠️⚠️
 
 # Usage
 1. Open Spotify and start your favourite track.
 2. Run the script from a terminal using `python main.py` in the local repository's directory (or probably by double-cliking on the `main` python script from your file explorer on Windows).
    - If it's the first time running the script, enter your Spotify username and paste in the **Client ID** and **Client Secret** when prompted to enter them.
 4. Congratulations! You can now listen to Spotify with no ads and the peace of mind you deserve 😁.
+
+## Pausing playback, Skipping tracks, Changing playlists.
+
+Due to the way the script works, pausing and playing or manually changing tracks disrupts it's work, such that the next ad that comes up might not be skipped.
+Not, to worry, the script has a way around this...
+
+When you want to perform any of these actions:
+1. Go to the terminal where in the script is running.
+2. Press `Ctr-C` i.e hold down the `Ctrl` key and tap the `C` key.
+3. Follow the prompts to perform your desired action.
+
+⚠️**Note**: If you're using **Command Prompt** on windows, please note that it might have some unwanted behaviour with keyboard input that affects this feature. **You are strongly adviced to run the script in _Windows Powershell_**.
 
 # Contributing
 If you want to contribute code, just write a quick pull request and the developers will take a look at it.
