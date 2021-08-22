@@ -1,4 +1,7 @@
 import sys, os, time, shutil, subprocess, json, urllib
+from getpass import getpass
+
+from utils import get_password, store_credentials, load_credentials
 
 try:
     import spotipy
@@ -144,57 +147,88 @@ if __name__ == '__main__':
                )
            )
 
-    spotifyAccessScope = "user-read-currently-playing"
-    spotifyRedirectURI = "http://localhost:8080/"
+    SPOTIFY_ACCESS_SCOPE = "user-read-currently-playing"
+    SPOTIFY_REDIRECT_URI = "http://localhost:8080/"
 
-    try:
-        with open("./credentials.json", "r") as creds_json:
-            creds = json.load(creds_json)
-
-            load = input("Found previously used credentials."
-                         " Want to use them again? (Y/n) "
-                        ).lower()
-
-            if load != "y":
-                if load == "n":
-                    print("User didn't want to load from save.")
-                    raise FileNotFoundError
-                else:
-                    print("Unrecognized Input.")
-                    creds_json.close()  # The program exits immediately below.
-                    sys.exit(0)
-
-            spotify_username = creds["spotify_username"]
-            spotify_client_id = creds["spotify_client_id"]
-            spotify_client_secret = creds["spotify_client_secret"]
-
-    except FileNotFoundError:
-        spotify_username = input("Ok, what's your Spotify username? ")
-        spotify_client_id = input("Great, now what's the ClientID you're using? ")
-        spotify_client_secret = input("Beautiful, now how about the Client Secret? ")
-
-        save = input("Awesome, now would you like to save these settings"
-                     " for future sessions? (Y/n) "
+    loaded = False
+    if os.access("credentials.bin", os.R_OK):
+        load = input("Found previously saved credentials. Want to use them again? (y/n) "
                     ).lower()
+
+        if load == "y":
+            tries = 0
+            while tries < 3:
+                pwd = getpass("Enter your password: ")
+                if len(pwd)>=8 and pwd.isascii() and pwd.isprintable() and ' ' not in pwd:
+                    try:
+                        username, client_id, client_secret = load_credentials(pwd)
+                        loaded = True
+                        break
+                    except TypeError:
+                        print("Incorrect password!")
+                    except ValueError:
+                        print("Can't load stored credentials, must be corrupted!")
+                        try:
+                            os.remove("credentials.bin")
+                        except PermissionError:
+                            print("Could not delete 'credentials.bin', "
+                                  "please manually delete it.")
+                        loaded = False
+                        break
+                else:
+                    print("Invalid password!")
+                tries += 1
+            else:
+                print("3 Wrong Attempts! Exiting...")
+                sys.exit(0)
+        elif load == "n":
+            print("User didn't want to load from save.")
+        else:
+            print("Unrecognized Input. Exiting...")
+            sys.exit(0)
+
+    if not loaded:
+        if os.access("credentials.json", os.R_OK):
+            with open("credentials.json", "r") as creds_json:
+                 username, client_id, client_secret = json.load(creds_json).values()
+
+            try:
+                os.remove("credentials.json")
+            except PermissionError:
+                print("Could not delete 'credentials.json', please manually delete it.")
+
+            save = "y"
+            print("\nNOTICE: Old credentials store found!\n"
+                  "This script has been updated to now encrypt stored credentials.\n"
+                  "Due to this, you now have to enter a password when loading stored "
+                  "credentials henceforth.\n"
+                  "Please your new password below to encrypt your existing "
+                  "credentials.\n")
+        else:
+            username = input("What's your Spotify username? ")
+            client_id = input("Great, now what's the ClientID you're using? ")
+            client_secret = input("Beautiful, now how about the Client Secret? ")
+
+            save = input("Awesome, now would you like to save your credentials"
+                         " for future sessions? (y/N) "
+                        ).lower()
         
         if save == "y":
-            save_obj = {
-                "spotify_username": spotify_username,
-                "spotify_client_id": spotify_client_id,
-                "spotify_client_secret": spotify_client_secret
-            }
+            password = get_password()
+            if not password:
+                print("Too many invalid attempts! Credentials not saved.\nExiting...")
+                sys.exit(0)
 
-            with open("./credentials.json", "w") as creds:
-                creds.write(json.dumps(save_obj))
-                creds.close()
-
-                print("Saved.")
-
+            try:
+                store_credentials(password, username, client_id, client_secret)
+                print("Credentials saved.")
+            except PermissionError:
+                print("Credentials could not be stored due to lack of permission\n"
+                      "The script will continue anyways...")
         elif save == "n":
             print("Not saving settings.")
-
         else:
             print("Didn't recognize input, defaulted to not saving.")
 
-    main(spotify_username, spotifyAccessScope, spotify_client_id, spotify_client_secret, spotifyRedirectURI, PATH)
+    main(username, SPOTIFY_ACCESS_SCOPE, client_id, client_secret, SPOTIFY_REDIRECT_URI, PATH)
 
