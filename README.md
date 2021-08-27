@@ -1,6 +1,7 @@
 # SpotiByeAds
  [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/) 
  [![GitHub license](https://img.shields.io/github/license/daspartho/SpotiByeAds.svg)](https://github.com/daspartho/SpotiByeAds/blob/main/LICENSE)
+ [![Documentation Status](https://readthedocs.org/projects/spotibyeads/badge/?version=latest)](https://spotibyeads.readthedocs.io/en/latest/?badge=latest)
  [![GitHub stars](https://img.shields.io/github/stars/daspartho/SpotiByeAds.svg?style=social&label=Stars&maxAge=2592000)](https://github.com/daspartho/SpotiByeAds/stargazers/)
  [![GitHub forks](https://img.shields.io/github/forks/daspartho/SpotiByeAds.svg?style=social&label=Forks&maxAge=2592000)](https://github.com/daspartho/SpotiByeAds/stargazers/)
 
