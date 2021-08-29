@@ -3,7 +3,7 @@
  [![GitHub license](https://img.shields.io/github/license/daspartho/SpotiByeAds.svg)](https://github.com/daspartho/SpotiByeAds/blob/main/LICENSE)
  [![Documentation Status](https://readthedocs.org/projects/spotibyeads/badge/?version=latest)](https://spotibyeads.readthedocs.io/en/latest/?badge=latest)
  [![GitHub stars](https://img.shields.io/github/stars/daspartho/SpotiByeAds.svg?style=social&label=Stars&maxAge=2592000)](https://github.com/daspartho/SpotiByeAds/stargazers/)
-![GitHub forks](https://img.shields.io/github/forks/daspartho/SpotiByeAds?style=social)
+ [![GitHub stars](https://img.shields.io/github/forks/daspartho/SpotiByeAds?style=social)](https://github.com/daspartho/SpotiByeAds/network/members)
 
 No one likes interruptions! Don't you hate it when you're listening to your favorite jazz track or your EDM playlist and an ad for Old Spice or Pepsi starting playing interrupting your mood? With SpotiByeAds, you can listen ad-free allowing you to concentrating less on those ads and more towards the task at hand!
 
