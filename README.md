@@ -74,17 +74,28 @@ This is also applicable on any other OS, if the Spotify installation path is dif
    - If it's the first time running the script, enter your Spotify username and paste in the **Client ID** and **Client Secret** when prompted to enter them.
 4. Congratulations! You can now listen to Spotify with no ads and the peace of mind you deserve 😁.
 
-## Pausing playback, Skipping tracks, Changing playlists.
+## Config
+`config.json` is file from which script load settings.
 
-Due to the way the script works, pausing and playing or manually changing tracks disrupts it's work, such that the next ad that comes up might not be skipped.
-Not, to worry, the script has a way around this...
+Settings description:
+- "is_hide_in_trey" - set `true` if you want hide spotify in trey after skiping ad (also change spotify settings)
+- "auto_logging" - `true` for log automatically if file of previous session exists
+- "pause_track" - `true` for pause track when script is paused
+- "cred_path" - path to file of previous session
+- "hotkeys_path" - path to hotkeys file
 
-When you want to perform any of these actions:
-1. Go to the terminal where in the script is running.
-2. Press `Ctr-C` i.e hold down the `Ctrl` key and tap the `C` key.
-3. Follow the prompts to perform your desired action.
 
-⚠️**Note**: If you're using **Command Prompt** on windows, please note that it might have some unwanted behaviour with keyboard input that affects this feature. **You are strongly adviced to run the script in _Windows Powershell_**.
+## Hotkeys
+
+You can set Hotkeys in file which specified in `config.json`, they must to be parseble for [pynput.keyboard.GlobalHotKeys](https://pynput.readthedocs.io/en/latest/keyboard.html#global-hotkeys). 
+
+The defined hotkeys are now:
+- "next_track" - play next track without broking work of script
+- "prev_track" - play previous track without broking work of script
+- "stop_track" - pause/unpause script, in you want change playlist (if script does working correct, try reload it by this hotkey)
+- "exit_script" - exit script
+
+
 
 # Contributing
 If you want to contribute code, just write a quick pull request and the developers will take a look at it.
