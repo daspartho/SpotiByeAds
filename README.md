@@ -5,13 +5,13 @@
  [![GitHub stars](https://img.shields.io/github/stars/daspartho/SpotiByeAds.svg?style=social&label=Stars&maxAge=2592000)](https://github.com/daspartho/SpotiByeAds/stargazers/)
  [![GitHub stars](https://img.shields.io/github/forks/daspartho/SpotiByeAds?style=social)](https://github.com/daspartho/SpotiByeAds/network/members)
 
-No one likes interruptions! Don't you hate it when you're listening to your favorite jazz track or your EDM playlist and an ad for Old Spice or Pepsi starting playing interrupting your mood? With SpotiByeAds, you can listen ad-free allowing you to concentrating less on those ads and more towards the task at hand!
+No one likes interruptions! Don't you hate it when you're listening to your favorite jazz track or your EDM playlist and an ad for Old Spice or Pepsi started playing, interrupting your mood? With SpotiByeAds, you can listen ad-free, allowing you to concentrate less on those ads and more towards the task at hand!
 
 # How it works?
-SpotiByeAds or SBA for short utilizes Python with the SpotiPy API and Pynput Libraries as well as the `os` and `sys` modules in order to provide you with an ad-free experience.
+SpotiByeAds, or SBA for short, utilizes Python with the SpotiPy API and Pynput Libraries as well as the `os` and `sys` modules in order to provide you with an ad-free experience.
 
 First, it asks you for your Spotify Username, Client ID and Client Secret (which is done by running `python main.py`). Of course if you've used this program and have saved the credentials, it should load a json file with your credentials in it and if not, it will ask for your credentials.
-Note that whenever you enter your credentials, you have the option of either saving your credentials for future use or keeping your credentials just for that session of using SBA.
+Please note that whenever you enter your credentials, you have the option of either saving your credentials for future use, or keeping your credentials just for that session of using SBA.
 
 After SBA has your credentials, it will establish a connection with Spotify by restarting it and setting it to your last known track/playlist.
 When an ad enters your spotify queue, SBA will detect the current track as an ad and restart the app. After the restart, SBA will automatically queue up the next track!
@@ -81,7 +81,7 @@ Not, to worry, the script has a way around this...
 
 When you want to perform any of these actions:
 1. Go to the terminal where in the script is running.
-2. Press `Ctr-C` i.e hold down the `Ctrl` key and tap the `C` key.
+2. Press `Ctrl-C` i.e hold down the `Ctrl` key and tap the `C` key.
 3. Follow the prompts to perform your desired action.
 
 ⚠️**Note**: If you're using **Command Prompt** on windows, please note that it might have some unwanted behaviour with keyboard input that affects this feature. **You are strongly adviced to run the script in _Windows Powershell_**.
